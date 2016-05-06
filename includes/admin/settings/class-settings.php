@@ -1031,7 +1031,6 @@ class Affiliate_WP_Settings {
 
 		// retrieve the license from the database
 		$status  = $this->get( 'license_status' );
-		$license = trim( $_POST['affwp_settings']['license_key'] );
 
 		if( 'valid' == $status )
 			return; // license already activated and valid
@@ -1039,7 +1038,7 @@ class Affiliate_WP_Settings {
 		// data to send in our API request
 		$api_params = array(
 			'edd_action'=> 'activate_license',
-			'license' 	=> $license,
+			'license' 	=> self::get_license_key( $_POST['affwp_settings']['license_key'] ),
 			'item_name' => 'AffiliateWP',
 			'url'       => home_url()
 		);
@@ -1073,13 +1072,10 @@ class Affiliate_WP_Settings {
 		if( ! isset( $_POST['affwp_settings']['license_key'] ) )
 			return;
 
-		// retrieve the license from the database
-		$license = trim( $_POST['affwp_settings']['license_key'] );
-
 		// data to send in our API request
 		$api_params = array(
 			'edd_action'=> 'deactivate_license',
-			'license' 	=> $license,
+			'license' 	=> self::get_license_key( $_POST['affwp_settings']['license_key'] ),
 			'item_name' => 'AffiliateWP',
 			'url'       => home_url()
 		);
@@ -1113,7 +1109,7 @@ class Affiliate_WP_Settings {
 			// data to send in our API request
 			$api_params = array(
 				'edd_action'=> 'check_license',
-				'license' 	=> $this->get( 'license_key' ),
+				'license' 	=> self::get_license_key(),
 				'item_name' => 'AffiliateWP',
 				'url'       => home_url()
 			);
@@ -1148,6 +1144,29 @@ class Affiliate_WP_Settings {
 
 	public function is_license_valid() {
 		return $this->check_license() == 'valid';
+	}
+
+	/**
+	 * Retrieves the license key.
+	 *
+	 * If the `AFFILIATEWP_LICENSE_KEY` constant is defined, it will override values stored in the database.
+	 *
+	 * @since 1.9
+	 * @access public
+	 * @static
+	 *
+	 * @param array $request_data POST or other data.
+	 * @return string License key.
+	 */
+	public static function get_license_key( $key = '' ) {
+		if ( defined( 'AFFILIATEWP_LICENSE_KEY' ) && is_string( AFFILIATEWP_LICENSE_KEY ) ) {
+			$license = AFFILIATEWP_LICENSE_KEY;
+		} elseif ( ! empty( $key ) ) {
+			$license = $key;
+		} else {
+			$license = self::get( 'license_key' );
+		}
+		return trim( $license );
 	}
 
 }
