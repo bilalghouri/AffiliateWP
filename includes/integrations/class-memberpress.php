@@ -36,7 +36,9 @@ class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 	 *
 	 * @access  public
 	 * @since   1.5
-	*/
+	 *
+	 * @param MeprTransaction $txn Transaction.
+	 */
 	public function add_pending_referral( $txn ) {
 
 		// Check if an affiliate coupon was used
@@ -71,8 +73,15 @@ class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 				return; // Referrals are disabled on this membership
 			}
 
+			// If a coupon with a trial was used, use the trial amount to calculate the commission.
+			if ( false !== $affiliate_id && 1 === $txn->coupon()->trial ) {
+				$amount = $txn->coupon()->trial_amount;
+			} else {
+				$amount = $txn->amount;
+			}
+
 			// get referral total
-			$referral_total = $this->calculate_referral_amount( $txn->amount, $txn->id, $txn->product_id );
+			$referral_total = $this->calculate_referral_amount( $amount, $txn->id, $txn->product_id );
 
 			// insert a pending referral
 			$this->insert_pending_referral( $referral_total, $txn->id, get_the_title( $txn->product_id ), array(), $txn->subscription_id );
@@ -339,6 +348,8 @@ class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 	 *
 	 * @access  public
 	 * @since   1.7.5
+	 *
+	 * @param MeprTransaction $txn Transaction.
 	*/
 	private function get_coupon_affiliate_id( $txn ) {
 		if( ! $coupon = $txn->coupon() ) {
