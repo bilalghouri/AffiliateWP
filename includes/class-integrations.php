@@ -16,6 +16,7 @@ class Affiliate_WP_Integrations {
 			'gravityforms'   => 'Gravity Forms',
 			'exchange'       => 'iThemes Exchange',
 			'jigoshop'       => 'Jigoshop',
+			'lifterlms'      => 'LifterLMS',
 			'marketpress'    => 'MarketPress',
 			'membermouse'    => 'MemberMouse',
 			'memberpress'    => 'MemberPress',
