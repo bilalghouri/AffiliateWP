@@ -222,16 +222,16 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 		affwp_admin_scripts();
 
 		$affiliate_id = get_post_meta( $post->ID, '_affwp_affiliate_id', true );
-		$user_id = affwp_get_affiliate_user_id( $affiliate_id );
-		$user = get_userdata( $user_id );
-		$user_name = ( $user ) ? $user->user_login : '';
+		$user_id      = affwp_get_affiliate_user_id( $affiliate_id );
+		$user         = get_userdata( $user_id );
+		$user_name    = ( $user ) ? $user->user_login : '';
 
 		$html = '
 			<span class="affwp-ajax-search-wrap">
 				<span class="affwp-llms-coupon-input-wrap">
-					<input type="hidden" name="_affwp_affiliate_user_id" id="user_id" value="' . $user_id . '" />
-					<input type="text" name="_affwp_affiliate_user_name" id="user_name" value="' . $user_name . '" class="affwp-user-search input-full" data-affwp-status="active" autocomplete="off" />
-					<img class="affwp-ajax waiting" src="' . admin_url('images/wpspin_light.gif') . '" style="display: none;"/>
+					<input type="hidden" name="_affwp_affiliate_user_id" id="user_id" value="' . esc_attr( $user_id ) . '" />
+					<input type="text" name="_affwp_affiliate_user_name" id="user_name" value="' . esc_attr( $user_name ) . '" class="affwp-user-search input-full" data-affwp-status="active" autocomplete="off" />
+					<img class="affwp-ajax waiting" src="' . esc_url( admin_url( 'images/wpspin_light.gif' ) ) . '" style="display: none;"/>
 				</span>
 				<span id="affwp_user_search_results"></span>
 			</span>
@@ -490,7 +490,6 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 
 	}
 
-
 	/**
 	 * Add an AffiliateWP Tab to LifterLMS Course & Membership Admin screen
 	 *
@@ -507,6 +506,7 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 	public function product_meta_output( $fields ) {
 
 		add_filter( 'affwp_is_admin_page', '__return_true' );
+
 		// Inject inline LifterLMS javascript.
 		$this->inline_js();
 
@@ -518,7 +518,6 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 
 			'title' => 'AffiliateWP',
 			'fields' => array(
-
 				array(
 					'type'		 => 'checkbox',
 					'label'		 => __( 'Disable Referrals', 'affiliate-wp' ),
@@ -528,7 +527,6 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 					'value' 	 => '1',
 					'group'      => '_affwp_enable_referral_overrides-hide'
 				),
-
 				array(
 					'type'		 => 'checkbox',
 					'label'		 => sprintf( __( 'Enable %s Referral Rate', 'affiliate-wp' ), ucfirst( $product_type ) ),
@@ -538,7 +536,6 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 					'value' 	 => '1',
 					'group'      => 'llms-affwp-disable-fields',
 				),
-
 				array(
 					'type'		 => 'number',
 					'label'		 => sprintf( __( '%s Referral Rate', 'affiliate-wp' ), ucfirst( $product_type ) ),
@@ -548,7 +545,6 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 					'desc_class' => 'd-all',
 					'group'      => '_affwp_enable_referral_overrides-show'
 				),
-
 				// JS uses this to only bind on llms pages
 				array(
 					'type' => 'custom-html',
